@@ -1,0 +1,83 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "EatLose diary",
+    "version": "1.0.0",
+    "description": "Read a seven-day summary using the diary owner's read-only grant. The owner can generate or revoke the grant in EatLose."
+  },
+  "externalDocs": { "url": "https://eatlose.com/agents/" },
+  "servers": [{ "url": "https://kgnnsvcrxefvavdyvakk.supabase.co/functions/v1" }],
+  "paths": {
+    "/agent-diary": {
+      "get": {
+        "operationId": "getWeeklyDiary",
+        "summary": "Read the last seven calendar dates in the diary time zone",
+        "security": [{ "diaryToken": [] }],
+        "responses": {
+          "200": {
+            "description": "Daily totals for confirmed meals that have reached the cloud",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Diary" },
+                "examples": {
+                  "fictionalWeek": { "summary": "A fictional week with six logged days", "externalValue": "https://eatlose.com/agents/sample-week.json" }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid, expired, replaced or revoked grant",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" }, "example": { "error": "invalid_connection" } } }
+          },
+          "503": {
+            "description": "Service is temporarily unavailable",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" }, "example": { "error": "unavailable" } } }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "diaryToken": { "type": "http", "scheme": "bearer", "description": "The diary token supplied by the owner in their copied EatLose instruction. Valid for up to 30 days." }
+    },
+    "schemas": {
+      "Diary": {
+        "type": "object",
+        "required": ["timezone", "from_date", "through_date", "cloud_read_at", "last_reported_device_sync_at", "coverage", "nutrition_days"],
+        "properties": {
+          "timezone": { "type": "string", "examples": ["Europe/London"] },
+          "from_date": { "type": "string", "format": "date", "description": "Inclusive first local date." },
+          "through_date": { "type": "string", "format": "date", "description": "Inclusive last local date." },
+          "cloud_read_at": { "type": "string", "format": "date-time", "description": "Time the server read this summary." },
+          "last_reported_device_sync_at": { "type": ["string", "null"], "format": "date-time", "description": "Latest successful sync reported by a device, or null if none was reported." },
+          "coverage": { "type": "string" },
+          "nutrition_days": { "type": "array", "maxItems": 7, "items": { "$ref": "#/components/schemas/NutritionDay" }, "description": "One row per local date with confirmed synced meals, in chronological order. A logged day can be incomplete." },
+          "user_logged_weights": { "type": "array", "items": { "$ref": "#/components/schemas/Weight" }, "description": "Present only when the owner includes weight they logged. May be empty." }
+        }
+      },
+      "NutritionDay": {
+        "type": "object",
+        "required": ["day", "meal_count", "estimated_kcal", "estimated_protein_g", "estimated_carbohydrate_g", "estimated_fat_g"],
+        "properties": {
+          "day": { "type": "string", "format": "date" },
+          "meal_count": { "type": "integer", "minimum": 1 },
+          "estimated_kcal": { "$ref": "#/components/schemas/Estimate" },
+          "estimated_protein_g": { "$ref": "#/components/schemas/Estimate" },
+          "estimated_carbohydrate_g": { "$ref": "#/components/schemas/Estimate" },
+          "estimated_fat_g": { "$ref": "#/components/schemas/Estimate" }
+        }
+      },
+      "Estimate": { "type": ["number", "null"], "description": "Daily total over confirmed synced meals. Null if at least one meal lacks this estimate." },
+      "Weight": {
+        "type": "object",
+        "required": ["measured_at", "weight_kg"],
+        "properties": {
+          "measured_at": { "type": "string", "format": "date-time" },
+          "weight_kg": { "type": "number" }
+        }
+      },
+      "Error": { "type": "object", "required": ["error"], "properties": { "error": { "type": "string" } } }
+    }
+  }
+}

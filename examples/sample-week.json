@@ -1,0 +1,58 @@
+{
+  "timezone": "Europe/London",
+  "from_date": "2026-11-18",
+  "through_date": "2026-11-24",
+  "cloud_read_at": "2026-11-24T12:15:00Z",
+  "last_reported_device_sync_at": "2026-11-24T12:10:00Z",
+  "coverage": "Confirmed synced meals only. Missing days have no logged meals. Nutrients are estimates. Null means unknown. A logged day may be incomplete.",
+  "nutrition_days": [
+    {
+      "day": "2026-11-18",
+      "meal_count": 3,
+      "estimated_kcal": 1834,
+      "estimated_protein_g": 78,
+      "estimated_carbohydrate_g": 223,
+      "estimated_fat_g": 70
+    },
+    {
+      "day": "2026-11-19",
+      "meal_count": 2,
+      "estimated_kcal": 1308,
+      "estimated_protein_g": 66,
+      "estimated_carbohydrate_g": 153,
+      "estimated_fat_g": 48
+    },
+    {
+      "day": "2026-11-21",
+      "meal_count": 3,
+      "estimated_kcal": 1930,
+      "estimated_protein_g": 89,
+      "estimated_carbohydrate_g": 236,
+      "estimated_fat_g": 70
+    },
+    {
+      "day": "2026-11-22",
+      "meal_count": 3,
+      "estimated_kcal": 1972,
+      "estimated_protein_g": 96,
+      "estimated_carbohydrate_g": 244,
+      "estimated_fat_g": 68
+    },
+    {
+      "day": "2026-11-23",
+      "meal_count": 2,
+      "estimated_kcal": 1456,
+      "estimated_protein_g": 71,
+      "estimated_carbohydrate_g": 185,
+      "estimated_fat_g": null
+    },
+    {
+      "day": "2026-11-24",
+      "meal_count": 1,
+      "estimated_kcal": 532,
+      "estimated_protein_g": 28,
+      "estimated_carbohydrate_g": 60,
+      "estimated_fat_g": 20
+    }
+  ]
+}
